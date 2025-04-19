@@ -14,6 +14,8 @@ app.use(cors());
 // Routes
 app.use('/api/users', require('./routes/userRoute'));
 app.use('/api/courses', require('./routes/courseRoute'));
+app.use('/api/videos' , require('./routes/videoRoutes'))
+app.use('/api/quiz' , require('./routes/quizRoute'))
 // Add other routes as needed
 
 // Connect to MongoDB and start server
