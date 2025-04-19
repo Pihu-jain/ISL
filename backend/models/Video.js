@@ -5,7 +5,7 @@ const videoSchema = new mongoose.Schema({
   description: { type: String },
   url:         { type: String, required: true },
   duration:    { type: Number },
-  course:      { type: mongoose.Schema.Types.ObjectId, ref: 'Course', required: true, default:null },
+  // course:      { type: mongoose.Schema.Types.ObjectId, ref: 'Course', required: true, default:null },
   comments:    [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }],
   createdAt:   { type: Date, default: Date.now }
 });

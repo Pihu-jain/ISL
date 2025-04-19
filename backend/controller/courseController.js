@@ -107,6 +107,16 @@ const fetchPlaylist = async (req, res) => {
 };
 
 
+const getCoursesByInstructor = async (req, res) => {
+    try {
+      const { instructor } = req.params;
+      const courses = await Course.find({ instructor });
+      res.status(200).json(courses);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Failed to fetch courses' });
+    }
+  };
 
 const updateCourse = async (req, res) => {
     try {
@@ -165,4 +175,4 @@ const deleteCourse = async (req, res) => {
 
 
 
-module.exports = { getAllCourses, getCourseById, createCourse, updateCourse, deleteCourse, addVideoToCourse, fetchPlaylist };
+module.exports = {getCoursesByInstructor, getAllCourses, getCourseById, createCourse, updateCourse, deleteCourse, addVideoToCourse, fetchPlaylist };

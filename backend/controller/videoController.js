@@ -1,6 +1,6 @@
 const Video = require('../models/Video');
 const Course = require('../models/Course');
-const uploadToCloudinary = require('../utils/cloudinary');
+const uploadToCloudinary = require('../utils/uploadOnCloudinary');
 
 // Create video and upload file to Cloudinary
 const createVideo = async (req, res) => {

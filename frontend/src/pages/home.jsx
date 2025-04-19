@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import CourseCard from '../components/CourseCard';
+import Header from './header';
 
 function Home() {
   const [courses, setCourses] = useState([]);
@@ -13,7 +14,9 @@ function Home() {
   }, []);
 
   return (
-    <div className="p-10 bg-gray-100 min-h-screen">
+    <div>
+      <Header/>
+      <div className="p-10 bg-gray-100 min-h-screen">
       <h1 className="text-3xl font-bold mb-6 text-center">All Courses</h1>
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -22,6 +25,8 @@ function Home() {
         ))}
       </div>
     </div>
+    </div>
+    
   );
 }
 

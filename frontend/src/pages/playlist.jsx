@@ -7,7 +7,8 @@ export default function Playlist() {
   const [course, setCourse] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  console.log('Course ID:', courseId); 
+  useEffect(() => {     
     const fetchCourse = async () => {
       try {
         const response = await axios.get(`http://localhost:5000/api/courses/playlist/${courseId}`);
@@ -60,7 +61,7 @@ export default function Playlist() {
   };
 
   const playlistVideos = course.videos;
-  console.log('Playlist Videos:', playlistVideos); // Debugging line
+  console.log('Playlist Videos:', playlistVideos); 
 
   return (
     <div className="max-w-4xl mx-auto p-8">

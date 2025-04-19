@@ -5,6 +5,7 @@ import axios from 'axios';
 const AddVideoToCourse = () => {
   const { courseId } = useParams();
   const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
   const [video, setVideo] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -54,7 +55,7 @@ const AddVideoToCourse = () => {
             required
           />
         </div> 
-
+    
         <div>
           <label className="block mb-1 font-medium text-gray-700">Upload Video</label>
           <input
