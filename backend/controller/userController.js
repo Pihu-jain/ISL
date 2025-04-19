@@ -6,8 +6,17 @@ const jwt = require('jsonwebtoken');
 const signupUser = async (req, res) => {
   const { username, email, password } = req.body;
 
+  if(!username || !email || !password){
+    return res.status(400).json({message: 'All fields are required'});
+  }
+
   try {
     // Check if user already exists
+
+    const name = await User.findOne({username});
+    if(name){
+      return res.status(400).json({message: 'Username is taken'})
+    }
     const userExists = await User.findOne({ email });
     if (userExists) {
       return res.status(400).json({ message: 'User already exists' });
@@ -22,6 +31,7 @@ const signupUser = async (req, res) => {
       username,
       email,
       password: hashedPassword,
+      role:'student',
     });
 
     // Send response with the created user
@@ -31,6 +41,7 @@ const signupUser = async (req, res) => {
         id: newUser._id,
         username: newUser.username,
         email: newUser.email,
+        role: newUser.role,
       },
     });
   } catch (error) {
@@ -42,6 +53,9 @@ const signupUser = async (req, res) => {
 // Login Controller
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
+  if(!email || !password){
+    res.status(200).json({message:'ALl fields are required'})
+  }
 
   try {
     // Find user by email
@@ -75,6 +89,10 @@ const loginUser = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+
+const logoutUser = async(req,res) =>{
+  res.status(200).json("logout successfully")
+}
 
 // // Get Logged-in User Data Controller
 // const getMe = async (req, res) => {
@@ -155,4 +173,4 @@ const enrollInCourse = async (req, res) => {
 };
 
 
-module.exports = { signupUser, loginUser,getAllUsers, getUserById, getUserPoints, enrollInCourse };
+module.exports = { signupUser, loginUser,logoutUser,getAllUsers, getUserById, getUserPoints, enrollInCourse };

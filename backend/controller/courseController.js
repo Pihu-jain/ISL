@@ -1,6 +1,8 @@
 const Course = require('../models/Course');
 const Video = require('../models/Video');
 const uploadToCloudinary = require('../utils/uploadOnCloudinary');
+const Comment = require('../models/Comment');
+const Quiz = require('../models/Quiz');
 
 // Get all courses
 const getAllCourses = async (req, res) => {
@@ -15,18 +17,18 @@ const getAllCourses = async (req, res) => {
 
 const getCourseById = async (req, res) => {
     try {
-        const course = await Course.findById(req.params.id);
-
+        const course = await Course.findById(req.params.id).populate('videos');
+  
         if (!course) {
             return res.status(404).json({ message: 'Course not found' });
         }
-
+  
         res.status(200).json(course);
     } catch (error) {
         console.error('Error fetching course by ID:', error);
         res.status(500).json({ message: 'Server error' });
     }
-};
+  };
 
 // Create a new course (Admin only)
 const createCourse = async (req, res) => {
@@ -124,16 +126,42 @@ const updateCourse = async (req, res) => {
 // Delete course (Admin only)
 const deleteCourse = async (req, res) => {
     try {
-        const deletedCourse = await Course.findByIdAndDelete(req.params.id);
-        if (!deletedCourse) {
-            return res.status(404).json({ message: 'Course not found' });
-        }
-        res.status(200).json({ message: 'Course deleted successfully' });
+      const courseId = req.params.id;
+  
+      // 1. Find the course
+      const course = await Course.findById(courseId);
+      if (!course) {
+        return res.status(404).json({ message: 'Course not found' });
+      }
+  
+      // 2. Find and delete all related videos
+      const videos = await Video.find({ course: courseId });
+  
+      // 3. Collect all comment IDs from those videos
+      const commentIds = videos.flatMap(video => video.comments);
+  
+      // 4. Delete all related comments
+      await Comment.deleteMany({ _id: { $in: commentIds } });
+  
+      // 5. Delete all related videos
+      await Video.deleteMany({ course: courseId });
+  
+      // 6. Delete the quiz (if any)
+      if (course.quiz) {
+        await Quiz.findByIdAndDelete(course.quiz);
+      }
+  
+      // 7. Delete the course itself
+      await Course.findByIdAndDelete(courseId);
+  
+      res.status(200).json({ message: 'Course, videos, quiz, and comments deleted successfully' });
+  
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Server error' });
+      console.error('Error deleting course and its related data:', error);
+      res.status(500).json({ message: 'Server error' });
     }
-};
+  };
+  
 
 
 

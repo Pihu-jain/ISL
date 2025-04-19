@@ -10,9 +10,11 @@ const upload = require('../middleware/uploadMiddleware');
 
 const router = express.Router();
 
-router.post('/', protect, adminOnly, upload.single('video'), createVideo);
-router.get('/course/:courseId', getVideosByCourse);
-router.get('/:id', getVideoById);
+
+//admin Routes
 router.delete('/:id', protect, adminOnly, deleteVideo);
+
+//user routes
+router.get('/:id',protect ,getVideoById);
 
 module.exports = router;

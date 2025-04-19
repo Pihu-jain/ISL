@@ -56,12 +56,25 @@ const getVideoById = async (req, res) => {
 
 const deleteVideo = async (req, res) => {
   try {
-    const video = await Video.findByIdAndDelete(req.params.id);
-    if (!video) return res.status(404).json({ message: 'Video not found' });
-    res.status(200).json({ message: 'Video deleted successfully' });
+    const videoId = req.params.id;
+
+    const video = await Video.findByIdAndDelete(videoId);
+    if (!video) {
+      return res.status(404).json({ message: 'Video not found' });
+    }
+
+    // 2. Remove video from ALL courses that reference it (atomic operation)
+    await Course.updateMany(
+      { videos: videoId },  // Find courses containing this video
+      { $pull: { videos: videoId } }  // Remove it
+    );
+
+    res.status(200).json({ 
+      message: 'Video permanently deleted'
+    });
+
   } catch (error) {
-    console.error(error.message);
-    res.status(500).json({ message: 'Internal Server Error' });
+    res.status(500).json({ message: 'Failed to completely remove video' });
   }
 };
 
